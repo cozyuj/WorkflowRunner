@@ -53,31 +53,112 @@ async def form_page():
 <html>
 <head>
 <title>ComfyUI Generator</title>
+<!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+    body {
+        font-family: 'Roboto', sans-serif; /* 전체 폰트 적용 */
+    }
+    form {
+        max-width: 600px;
+    }
+    select, textarea, input, button {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px;
+        margin: 6px 0;
+        font-size: 16px;
+    }
+    textarea {
+        height: 100px; /* 높이 기본값 */
+        resize: vertical; /* 세로 크기만 조절 가능 */
+    }
+    button {
+        cursor: pointer;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 6px;
+    }
+    button:hover {
+        background-color: #45a049;
+    }
+    small {
+        color: gray;
+    }
+    p {
+        font-weight: bold;   /* 굵게 */
+        color: #333333;      /* 진한 회색 */
+    }
+    hr {
+        border: none;             /* 기본 선 제거 */
+        height: 1px;              /* 선 두께 */
+        background-color: #cccccc; /* 원하는 색상 */
+    }
+    #progressContainer {
+        max-width: 600px;
+        background-color: #eee;  /* 바깥 배경 */
+        border-radius: 6px;
+        overflow: hidden;
+        height: 20px;
+        margin-bottom: 8px;
+    }
+
+    #progressBar {
+        width: 1%;                  /* 기본 0% */
+        height: 100%;
+        background-color: #4CAF50; /* 진행률 색상 */
+        transition: width 0.3s ease; /* 부드럽게 이동 */
+    }
+
+</style>
 </head>
 <body>
 <h2>ComfyUI 프롬프트 입력</h2>
+<hr>
 <form id="genForm">
-템플릿 선택:<br>
+<p>템플릿 선택</p>
+<small>미리 저장된 프롬프트/네거티브 조합을 불러옵니다.</small><br>
 <select id="templateSelect" onchange="onTemplateChange()"></select><br><br>
 
-Prompt:<br><textarea id="prompt" rows="4" cols="60"></textarea><br><br>
-Negative Prompt:<br><textarea id="negative" rows="4" cols="60"></textarea><br><br>
-Sampler:<br>
+<p>prompt</p>
+<small>생성하고 싶은 이미지를 묘사하는 문장</small><br>
+<textarea id="prompt" rows="4" cols="60"></textarea><br><br>
+
+<p>Negative Prompt</p>
+<small>피하고 싶은 요소 (예: low quality, blurry)</small><br>
+<textarea id="negative" rows="4" cols="60"></textarea><br><br>
+
+<p>Sampler</p>
+<small>픽셀을 확정하는 방식 (알고리즘)</small><br>
 <select id="sampler">
 <option value="euler">Euler a</option>
 <option value="dpmpp_2m_sde_gpu">DPM++ SDE</option>
 <option value="lms">LMS</option>
-</select><br><br>
-Steps:<br>
+</select>
+<br><br>
+
+<p>Steps</p>
+<small>샘플링 반복 횟수 (높을수록 디테일 ↑)</small><br>
 <input type="number" id="steps" value="30" min="1" max="100"><br><br>
-CFG Scale:<br>
+
+<p>CFG Scale</p>
+<small>프롬프트를 얼마나 강하게 반영할지 결정 / 기본 7.0~7.5</small><br>
 <input type="number" id="cfg_scale" value="7.5" step="0.1" min="0" max="20"><br><br>
-생성 개수:<br>
+
+<p>생성 개수</p>
+<small>한 번에 몇 장의 이미지를 만들지</small><br>
 <input type="number" id="num_images" value="1" min="1" max="10"><br><br>
 <button type="button" onclick="generate()">이미지 생성</button>
 </form>
 
-<h3 id="progress">진행률: 0%</h3>
+<label for="progressBar">진행률</label> <span id="progressText">0%</span><br>
+<div id="progressContainer">
+    <div id="progressBar"></div>
+</div>
+
 
 <script>
 async function generate() {
