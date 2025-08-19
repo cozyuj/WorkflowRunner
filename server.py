@@ -30,16 +30,36 @@ progress_status = {"progress": 0, "done": False, "download_url": ""}
 
 
 # -----------------------------
+# 템플릿 불러오기
+# -----------------------------
+TEMPLATE_FILE = "./prompts/templates.json"
+
+@app.get("/templates")
+async def get_templates():
+    try:
+        with open(TEMPLATE_FILE, "r", encoding="utf-8") as f:
+            templates = json.load(f)
+        return {"status": "ok", "templates": templates}
+    except Exception as e:
+        return {"status": "fail", "msg": str(e)}
+
+
+# -----------------------------
 # HTML 페이지
 # -----------------------------
 @app.get("/", response_class=HTMLResponse)
 async def form_page():
     return """
 <html>
-<head><title>ComfyUI Generator</title></head>
+<head>
+<title>ComfyUI Generator</title>
+</head>
 <body>
 <h2>ComfyUI 프롬프트 입력</h2>
 <form id="genForm">
+템플릿 선택:<br>
+<select id="templateSelect" onchange="onTemplateChange()"></select><br><br>
+
 Prompt:<br><textarea id="prompt" rows="4" cols="60"></textarea><br><br>
 Negative Prompt:<br><textarea id="negative" rows="4" cols="60"></textarea><br><br>
 Sampler:<br>
@@ -105,6 +125,52 @@ async function generate() {
         alert("생성 요청 실패! 오류: " + (data.msg||"알 수 없음"));
     }
 }
+async function loadTemplates() {
+    const resp = await fetch("/templates");
+    const data = await resp.json();
+    console.log("템플릿 응답:", data);  // ✅ 디버깅용
+
+    if (data.status === "ok") {
+        templates = data.templates;
+        console.log("템플릿 배열:", templates); // ✅ 확인
+        const select = document.getElementById("templateSelect");
+        select.innerHTML = "";
+
+        templates.forEach((tpl, idx) => {
+            console.log("추가되는 옵션:", tpl.name); // ✅ 확인
+            const option = document.createElement("option");
+            option.value = idx;
+            option.textContent = tpl.name;
+            select.appendChild(option);
+        });
+
+        if (templates.length > 0) {
+            select.value = 0;
+            applyTemplate(0);
+        }
+    } else {
+        console.error("템플릿 불러오기 실패:", data);
+    }
+}
+
+
+// 템플릿 적용 함수
+function applyTemplate(idx) {
+    if (!templates[idx]) return;
+    const tpl = templates[idx];
+    document.getElementById("prompt").value = tpl.prompt || "";
+    document.getElementById("negative").value = tpl.negative || "";
+}
+
+// 선택 시 textarea 채우기
+function onTemplateChange() {
+    const idx = document.getElementById("templateSelect").value;
+    applyTemplate(idx);
+}
+
+// 페이지 로드 시 템플릿 불러오기
+window.onload = loadTemplates;
+
 </script>
 </body>
 </html>

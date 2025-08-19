@@ -1,0 +1,17 @@
+[
+  {
+    "name": "자동차 스피드폼",
+    "prompt": "abstract automotive sculpture, pure speedform silhouette, high detail",
+    "negative": "low quality, blurry, watermark"
+  },
+  {
+    "name": "미래형 건축",
+    "prompt": "futuristic architecture, sci-fi city skyline, cinematic lighting",
+    "negative": "lowres, cropped, distorted"
+  },
+  {
+    "name": "유기적 조형물",
+    "prompt": "organic sculpture, flowing metallic curves, biomorphic design",
+    "negative": "flat, noisy, text overlay"
+  }
+]
