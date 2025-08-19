@@ -1,0 +1,157 @@
+{
+  "1": {
+    "inputs": {
+      "ckpt_name": "Realistic_Vision_V5.1.ckpt"
+    },
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {
+      "title": "체크포인트 로드"
+    }
+  },
+  "3": {
+    "inputs": {
+      "text": "\n",
+      "clip": [
+        "13",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP 텍스트 인코딩 (프롬프트)"
+    }
+  },
+  "5": {
+    "inputs": {
+      "text": "",
+      "clip": [
+        "13",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP 텍스트 인코딩 (프롬프트)"
+    }
+  },
+  "6": {
+    "inputs": {
+      "seed": 393009150598452,
+      "steps": 40,
+      "cfg": 9,
+      "sampler_name": "dpmpp_2m_sde_gpu",
+      "scheduler": "simple",
+      "denoise": 1,
+      "model": [
+        "1",
+        0
+      ],
+      "positive": [
+        "3",
+        0
+      ],
+      "negative": [
+        "5",
+        0
+      ],
+      "latent_image": [
+        "15",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "KSampler"
+    }
+  },
+  "7": {
+    "inputs": {
+      "samples": [
+        "6",
+        0
+      ],
+      "vae": [
+        "1",
+        2
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE 디코드"
+    }
+  },
+  "8": {
+    "inputs": {
+      "filename_prefix": "FORMA",
+      "images": [
+        "7",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "이미지 저장"
+    }
+  },
+  "11": {
+    "inputs": {
+      "images": [
+        "7",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "이미지 미리보기"
+    }
+  },
+  "13": {
+    "inputs": {
+      "lora_name": "ParametricPixel_LoRA-10.safetensors",
+      "strength_model": 1,
+      "strength_clip": 1,
+      "model": [
+        "1",
+        0
+      ],
+      "clip": [
+        "1",
+        1
+      ]
+    },
+    "class_type": "LoraLoader",
+    "_meta": {
+      "title": "LoRA 로드"
+    }
+  },
+  "15": {
+    "inputs": {
+      "width": 512,
+      "height": 512,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "빈 잠재 이미지"
+    }
+  },
+  "19": {
+    "inputs": {
+      "images": [
+        "7",
+        0
+      ]
+    },
+    "class_type": "SaveImageWebsocket",
+    "_meta": {
+      "title": "이미지 웹소켓 전송"
+    }
+  },
+  "20": {
+    "inputs": {},
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "이미지 미리보기"
+    }
+  }
+}
