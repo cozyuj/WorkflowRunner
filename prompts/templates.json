@@ -1,8 +1,8 @@
 [
   {
     "name": "자동차 스피드폼",
-    "prompt": "abstract automotive sculpture, pure speedform silhouette, high detail",
-    "negative": "wheel, wheels, tire, tires, rim, rims, hubcap, ((wheel)), ((wheels)), ((tire)), ((tires)), low quality, blurry, watermark, low quality, blurry, watermark"
+    "prompt": "realistic automotive speedform sculpture, futuristic concept car body, aerodynamic metallic surface, polished aluminum, brushed steel finish, smooth continuous curves, wheel arches without wheels, highly detailed reflections, professional studio lighting, ultra realistic, photoreal rendering",
+    "negative": "wheels, tires, headlights, taillights, windows, mirrors, doors, interior, logos, text, people, blurry, low quality, plastic, cartoon, sketch"
   },
   {
     "name": "미래형 건축",
