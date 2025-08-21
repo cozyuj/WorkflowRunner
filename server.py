@@ -22,8 +22,8 @@ app.add_middleware(
 # 경로 설정
 # -----------------------------
 COMFYUI_API = "http://127.0.0.1:8188"
-WORKFLOW_JSON = "./workflows/parametricPixel Workflow.json"
-OUTPUT_DIR = "/Users/youjin/Workspaces/ComfyUI/output"
+WORKFLOW_JSON = "./workflows/parametricPixel_v3_Workflow_01.json"
+OUTPUT_DIR = "../ComfyUI/output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 progress_status = {"progress": 0, "done": False, "download_url": ""}
@@ -131,11 +131,17 @@ async def form_page():
 <small>피하고 싶은 요소 (예: low quality, blurry)</small><br>
 <textarea id="negative" rows="4" cols="60"></textarea><br><br>
 
+<p>LoRA 적용강도</p>
+<small>LoRA가 모델 레이어에 적용되는 강도. 0~1 범위로 조절 가능 (1 = 100%)</small><br>
+<input type="number" id="lora_strength" value="1" min="0" max="1"><br><br>
+<br><br>
+
+
 <p>Sampler</p>
 <small>픽셀을 확정하는 방식 (알고리즘)</small><br>
 <select id="sampler">
-<option value="euler">Euler a</option>
 <option value="dpmpp_2m_sde_gpu">DPM++ SDE</option>
+<option value="euler">Euler a</option>
 <option value="lms">LMS</option>
 </select>
 <br><br>
@@ -167,10 +173,11 @@ async function generate() {
     const sampler = document.getElementById("sampler").value;
     const steps = document.getElementById("steps").value;
     const cfg_scale = document.getElementById("cfg_scale").value;
+    const lora_strength = document.getElementById("lora_strength").value;
     const num_images = document.getElementById("num_images").value;
 
     // 요청 전 alert
-    alert(`생성 요청 전송\nPrompt: ${prompt}\nNegative: ${negative}\nSampler: ${sampler}\nSteps: ${steps}\nCFG Scale: ${cfg_scale}\n생성 개수: ${num_images}`);
+    alert(`생성 요청 전송\nPrompt: ${prompt}\nNegative: ${negative}\lora_strength: ${lora_strength}\nSampler: ${sampler}\nSteps: ${steps}\nCFG Scale: ${cfg_scale}\n생성 개수: ${num_images}`);
 
     const formData = new FormData();
     formData.append("prompt", prompt);
@@ -178,6 +185,7 @@ async function generate() {
     formData.append("sampler", sampler);
     formData.append("steps", steps);
     formData.append("cfg_scale", cfg_scale);
+    formData.append("lora_strength", lora_strength);
     formData.append("num_images", num_images);
 
     const resp = await fetch("/generate", {method:"POST", body:formData});
@@ -265,6 +273,7 @@ window.onload = loadTemplates;
 async def generate_image(
     prompt: str = Form(""),
     negative: str = Form(""),
+    lora_strength: float = Form(1),
     sampler: str = Form("Euler a"),
     steps: int = Form(30),
     cfg_scale: float = Form(7.5),
@@ -284,6 +293,7 @@ async def generate_image(
         workflow["6"]["inputs"]["steps"] = steps
         workflow["6"]["inputs"]["cfg"] = cfg_scale
         workflow["6"]["inputs"]["sampler_name"] = sampler
+        workflow["13"]["inputs"]["lora_strength"] = lora_strength
 
 
 
@@ -296,6 +306,7 @@ async def generate_image(
             "negative": negative,
             "sampler": sampler,
             "steps": steps,
+            "lora_strength" : lora_strength,
             "cfg_scale": cfg_scale,
             "num_images": num_images
         }
