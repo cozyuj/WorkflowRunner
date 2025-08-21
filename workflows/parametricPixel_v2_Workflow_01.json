@@ -107,7 +107,7 @@
   },
   "13": {
     "inputs": {
-      "lora_name": "ParametricPixel_LoRA-01.safetensors",
+      "lora_name": "ParametricPixel_v2_LoRA-10.safetensors",
       "strength_model": 1,
       "strength_clip": 1,
       "model": [
@@ -126,8 +126,8 @@
   },
   "15": {
     "inputs": {
-      "width": 1920,
-      "height": 1080,
+      "width": 512,
+      "height": 512,
       "batch_size": 1
     },
     "class_type": "EmptyLatentImage",
